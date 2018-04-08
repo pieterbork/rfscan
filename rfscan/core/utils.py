@@ -21,8 +21,13 @@ def parse_wifi_channel(ch):
 	else:
 		return ch
 
-def generate_colors(length):
-	return sample(colors_array, length)
+def generate_colors(channels):
+	colors = {}
+	rand_colors = sample(colors_array, len(channels))
+	for i in range(0, len(channels)):
+		colors[channels[i]] = rand_colors[i]
+	print(colors)
+	return colors
 
 def build_chart_js(type, records):
 	if (type == "ssids_per_channel"):
@@ -41,7 +46,6 @@ def build_chart_js(type, records):
 		for key in sorted(collect_counts.keys(), key=lambda x: int(x.split("_")[0])):
 			pie_chart['channel_names'].append("Channel " + parse_wifi_channel(key))
 			pie_chart['counts'].append(len(collect_counts[key]))
-		pie_chart['colors'] = generate_colors(len(pie_chart['counts']))
 		return pie_chart
 	elif (type == "packets_per_channel"):
 		bar_chart = {}
@@ -57,7 +61,6 @@ def build_chart_js(type, records):
 		for key in sorted(collect_counts.keys(), key=lambda x: int(x.split("_")[0])):
 			bar_chart['channel_names'].append("Channel " + parse_wifi_channel(key))
 			bar_chart['counts'].append(collect_counts[key])
-		bar_chart['colors'] = generate_colors(len(bar_chart['counts']))
 		return bar_chart
 
 def build_unique_ssids_table(records):

@@ -1,15 +1,14 @@
 from flask import render_template,request
-from flask_socketio import SocketIO,emit
-import thread
+from flask_socketio import emit
 from time import time,strftime
 from random import randrange
+from rfscan import app,socketio
+import thread
 import datetime
 
 from rfscan.core import database
 from rfscan.core.utils import *
 from rfscan.core.run_scans import scan_manager
-
-socketio = SocketIO(app, host="0.0.0.0")
 
 @app.route('/', methods=["GET"])
 def dash():
@@ -106,15 +105,16 @@ def results(job):
 	bt_records = database.get_records_from_table("Bluetooth", job_id)	
 	charts = {}
 
+	#Build the tables/charts
 	top_talkers = build_top_talkers_table(wifi_records)
 	ssids = build_unique_ssids_table(wifi_records)
 	charts['ssids_per_channel'] = build_chart_js("ssids_per_channel", wifi_records)
 	charts['packets_per_channel'] = build_chart_js("packets_per_channel", wifi_records)
-	if len(charts['ssids_per_channel']['counts']) == len(charts['packets_per_channel']['counts']):
-		colors = generate_colors(len(charts['packets_per_channel']['counts']))
-		charts['ssids_per_channel']['colors'] = colors
-		charts['packets_per_channel']['colors'] = colors
 
+	#Make sure colors are consistent
+	colors = generate_colors(charts['packets_per_channel']['channel_names'])
+	charts['packets_per_channel']['colors'] = colors.values()
+	charts['ssids_per_channel']['colors'] = [colors[ch] for ch in colors.keys() if ch in charts['ssids_per_channel']['channel_names']]
 	
 	return render_template("results.html", 
 				records={
