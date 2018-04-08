@@ -3,11 +3,13 @@
 {% block content %}
 <script src="{{url_for('static', filename='js/results.js')}}"></script>
 <div class="content container">
-	<h1 class="results_title">Results for {{ job }}</h1>
+	<h1 class="results_title">Results for {{ job }} Scan</h1>
 	{% if records["Wifi"]|length %}
-	{% include "wifi_results.html" %}
+	{% include "wifi_results_pdf.html" %}
 	{% endif %}
 	<div class="spacer"></div>
+	<h1>Raw Data</h1>
+	<hr>
 	{% for proto in records['protocols'] %}
 		{% if records[proto]|length %}
 			<div class="records_table">
@@ -29,8 +31,5 @@
 			</div>
 		{% endif %}
 	{% endfor %}
-	<a class="btn btn-lg btn-primary" href="/scan">Run new scan</a>
-	<a class="btn btn-lg btn-primary" href="/to_pdf/{{ job }}" target="_blank">Export to PDF</a>
-	<div class="spacer"></div>
 </div>
 {% endblock %}

@@ -1,6 +1,10 @@
 <script src="{{url_for('static', filename='js/Chart.min.js')}}"></script>
-<div class="chart_div"><canvas id="packets_per_channel" style="width:400px; height:400px;"></canvas></div>
+<div class="chart_container"><canvas id="packets_per_channel"></canvas></div>
 <script>
+	function done() {
+		window.status = "done";
+	}
+
 	var ctx = document.getElementById('packets_per_channel').getContext('2d');
 	var chart = new Chart(ctx, {
 		type: 'bar',
@@ -21,6 +25,10 @@
 				text: "Packets Per Channel",
 				fontSize: 30,
 			},
+			animation: {
+				onComplete: done,
+			},
+			maintainAspectRatio: false,
 		},
 	});
 </script>

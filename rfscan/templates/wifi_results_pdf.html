@@ -1,4 +1,7 @@
-<div class="row charts_container">
+<div class="spacer"></div>
+<h1>WiFi Results</h1>
+<hr>
+<div class="pdf_charts_container">
 	{% include "ssids_per_channel.html" %}
 	{% include "packets_per_channel.html" %}
 </div>
@@ -10,21 +13,16 @@
 </table>
 <div class="spacer"></div>
 <h2 class="results_section_title">Top Talkers</h2>
-<ul id="top_talkers_tabs" class="nav nav-tabs">
+<div>
 {% for channel_tuple in records['top_talkers'] %}
-	<li class="nav-item"><a data-toggle="tab" class="nav-link" href="#{{ channel_tuple[0] }}_tab">{{ channel_tuple[1] }}</a></li>
-{% endfor %}
-</ul>
-<div class="tab-content">
-{% for channel_tuple in records['top_talkers'] %}
-	<div id="{{ channel_tuple[0] }}_tab" class="container tab-pane">
-	<br>
+	<h3 class="pdf_talkers_header">{{ channel_tuple[1] }}</h3>
 	<table class="table table-striped table-sm">
 	<tr><th>MAC</th><th># Packets</th></tr>
 	{% for mac_tuple in channel_tuple[2] %}
 	<tr><td>{{ mac_tuple[0] }}</td><td>{{ mac_tuple[1] }}</td></tr>
 	{% endfor %}
 	</table>
-	</div>
+	<br>
 {% endfor %}
 </div>
+<div class="spacer"></div>

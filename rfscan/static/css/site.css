@@ -441,8 +441,20 @@ option::-moz-focus-inner {
 	border-top: none;
 }
 
-.chart_div {
+.charts_container > .chart_container {
 	width: 500px;
 	height: 500px;
 	margin: auto;
+}
+
+.pdf_charts_container > .chart_container {
+	width: 400px;
+	height: 400px;
+	margin: auto;
+	display: inline-block;
+}
+
+.pdf_talkers_header {
+	text-align: left;
+	margin-top: 20px;
 }

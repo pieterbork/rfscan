@@ -1,6 +1,6 @@
 from flask import render_template,request, make_response
 from flask_socketio import emit
-from time import time,strftime
+from time import time,strftime,sleep
 from random import randrange
 from rfscan import app,socketio
 import thread
@@ -38,7 +38,7 @@ def to_pdf(job):
 	charts['packets_per_channel']['colors'] = colors.values()
 	charts['ssids_per_channel']['colors'] = [colors[ch] for ch in colors.keys() if ch in charts['ssids_per_channel']['channel_names']]
 	
-	rendered = render_template("results.html", 
+	rendered = render_template("results_pdf.html", 
 				records={
 					"Wifi":sorted(wifi_records, key=lambda x: x[6], reverse=True),
 					"Wifi_fields": ["SSID", "MAC 1", "MAC 2", "MAC 3", "Frequency", "Count"],
@@ -52,9 +52,11 @@ def to_pdf(job):
 				}, 
 				charts=charts,
 				job=job)
+	sleep(1)
 	new_path = os.getcwd() + '/rfscan/static/'
 	rendered = rendered.replace('/static/', new_path)
-	pdf = pdfkit.from_string(rendered, False)
+	opt = {'window-status': "done"}
+	pdf = pdfkit.from_string(rendered, False, options=opt)
 	resp = make_response(pdf)
 	resp.headers['Content-Type'] = 'application/pdf'
 	resp.headers['Content-Disposition'] = 'inline; filename=output.pdf'
