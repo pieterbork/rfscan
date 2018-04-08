@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<input type="submit" onclick="submitScan();" value="Scan" class="scan_button">
+<div id="scan_form_container" class="container scan_form_container">
+	<div class="row">
+		<form class="rounded scan_form col-md-8" id="scan_form" action="/scan" method="post">
+			<div class="form-group row">
+				<label for="scan_name" class="col-sm-3 col-form-label" >Scan Name</label>
+				<input class="col-sm-6 form-control" name="scan_name" type="text" id="scan_name" value="{{defaults["scan_name"]}}">
+			</div>
+			<div class="form-group row">
+				<label for="scan_time" class="col-sm-3 col-form-label">Scan Time</label>
+				<input class="col-sm-6 form-control" name="scan_time" type="number" id="scan_time" value="{{defaults["scan_time"]}}">
+			</div>
+			<div class="row">
+				{% for proto,band,class_name in protocols %}
+				{% if "Wifi" in proto %}
+				{% set freqs = all_wifi_freqs[band] %}
+				{% else %}
+				{% set freqs = default_other_freqs[proto].items() %}
+				{% endif %}
+				<div class="form-group col-sm-3 scan_group">
+					<input type="hidden" name="{{ class_name }}" value="">
+					<label for="{{ class_name }}">{% if band|length %}{{proto+" "+band}}GHz{% else %}{{proto}}{% endif %}</label>
+					<select size="11" name="{{ class_name }}" multiple class="form-control" id="{{ class_name }}">
+					{% for freq in freqs %}
+					{% set is_default = freq[0]|int in defaults[proto+band] %}
+						<option  value="{{freq[1]}}"{% if is_default %} selected="selected" {% endif %}>{{freq[0]}}</option>
+					{% endfor %}
+					</select>
+					<button type="button" class="list_all_btn btn btn-sm" onclick="allList('{{ class_name }}');">All</button>
+					<button type="button" class="list_clr_btn btn btn-sm" onclick="clearList('{{ class_name }}');">Clear</button>
+				</div>
+				{% endfor %}
+				<input type="submit" class="btn bottom_button" value="Run Scan">
+			</div>
+		</form>
+		<div class="currently_checked card col-md-4">
+			<div class="card-header">
+				<h4>Currently Selected</h4>
+			</div>
+			<div class="card-body">
+				{% for proto,band,class_name in protocols %}
+				<h5>{{proto}}{% if band|length %} {{band}}Ghz{% endif %}</h5>
+				<div class="checked_section checked_{{class_name}}"></div>
+				{% endfor %}
+				<div class="checked_summary align-bottom">
+					<div>Total Checked: <span class="tot_count"></span></div>
+					<div>Time per channel: <span class="time_per_chan"></span></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
