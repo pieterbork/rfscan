@@ -70,6 +70,7 @@ def scan():
 		user_zigbee_channels = []
 		user_bt_channels = []
 		scan_time = 60
+		set_scan_name = request.args.get('set_scan_name')
 		try:
 			scan_time = int(request.form['scan_time'])
 			if scan_time < 0:
@@ -122,12 +123,17 @@ def scan():
 	elif (request.method == "GET"):
 		defaults = {
 			"scan_name": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+			"scan_type": "new",
 			"scan_time": 60,
 			"Wifi2.4": [1, 6, 11],
 			"Wifi5": [],
 			"Bluetooth": [37],
 			"Zigbee": [15, 20, 25, 26]
 		}
+		set_scan_name = request.args.get('set_scan_name')
+		if(set_scan_name != None):
+			defaults['scan_name'] = set_scan_name
+			defaults['scan_type'] = "add"
 		default_other_freqs = {
 			"Zigbee": default_zigbee_freqs,
 			"Bluetooth": default_bt_freqs

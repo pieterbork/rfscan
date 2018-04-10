@@ -6,7 +6,7 @@
 		<form class="rounded scan_form col-md-8" id="scan_form" action="/scan" method="post">
 			<div class="form-group row">
 				<label for="scan_name" class="col-sm-3 col-form-label" >Scan Name</label>
-				<input class="col-sm-6 form-control" name="scan_name" type="text" id="scan_name" value="{{defaults["scan_name"]}}">
+				<input class="col-sm-6 form-control" name="scan_name" type="text" id="scan_name" value="{{defaults["scan_name"]}}" {% if defaults['scan_type'] == "add" %}readonly{% endif %}>
 			</div>
 			<div class="form-group row">
 				<label for="scan_time" class="col-sm-3 col-form-label">Scan Time</label>
