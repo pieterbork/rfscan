@@ -29,6 +29,7 @@
 			</div>
 		{% endif %}
 	{% endfor %}
+	<div class="spacer"></div>
 	<a class="btn btn-lg btn-primary" href="/scan">Run New Scan</a>
 	<a class="btn btn-lg btn-primary" href="{{ url_for('scan', set_scan_name=job) }}">Add Data To Scan</a>
 	<a class="btn btn-lg btn-primary" href="/to_pdf/{{ job }}" target="_blank">Export To PDF</a>

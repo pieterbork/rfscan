@@ -43,10 +43,11 @@ def scan_manager(scan_name, wifi_24_options=wifi_24_options, wifi_5_options=wifi
 			insert_wifi_records(records)
 
 		if len(wifi_5_options['user_channels']) > 0:
-			try:		#remove previous scans
-				remove("/tmp/out_frames")
-			except OSError:
-				pass
+			if not(len(wifi_24_options['user_channels'])):
+				try:		#remove previous scans
+					remove("/tmp/out_frames")
+				except OSError:
+					pass
 			run_wifi_scan(user_channels=wifi_5_options['user_channels'],
 										scan_time=scan_time*len(wifi_5_options['user_channels']),
 										socketio=socketio,
