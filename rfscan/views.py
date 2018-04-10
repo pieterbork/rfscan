@@ -13,10 +13,14 @@ from rfscan.core import database
 from rfscan.core.utils import *
 from rfscan.core.run_scans import scan_manager
 
+#Required class to run PDFKit without x
+class HeadlessPdfKit(pdfkit.PDFKit):
+	def command(self, path=None):
+		return ['xvfb-run', '--'] + super(HeadlessPdfKit, self).command(path)
+
 @app.route('/', methods=["GET"])
 def dash():
 	jobs = database.get_records_from_table("Jobs")
-	
 	return render_template("dashboard.html", jobs=jobs)
 
 @app.route('/to_pdf/<job>')
@@ -56,7 +60,8 @@ def to_pdf(job):
 	new_path = os.getcwd() + '/rfscan/static/'
 	rendered = rendered.replace('/static/', new_path)
 	opt = {'window-status': "done"}
-	pdf = pdfkit.from_string(rendered, False, options=opt)
+	pdf = HeadlessPdfKit(rendered, 'string', options=opt).to_pdf(False)
+#	pdf = pdfkit.from_string(rendered, False, options=opt)
 	resp = make_response(pdf)
 	resp.headers['Content-Type'] = 'application/pdf'
 	resp.headers['Content-Disposition'] = 'inline; filename=output.pdf'
